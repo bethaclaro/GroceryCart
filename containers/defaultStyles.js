@@ -13,7 +13,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E2EFF1'
-      },
+    },
     header: {
         height: 50,
         paddingTop: 10,
@@ -24,9 +24,25 @@ export default StyleSheet.create({
         backgroundColor: '#65799B',
         width: "50%"
     },
-    menuContainer: {
-        backgroundColor: '#e4eddb',
+    result: {
+        backgroundColor: '#eeeeee',
+        height: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    resultText: {
+        height: 70,
+        backgroundColor: '#8ea6b4',
+        color: 'white',
+        fontSize: 35,
+        textAlign: 'right',
+        textAlignVertical: 'center',
+        paddingRight: 20,
+        paddingTop: 10,
+        paddingBottom: 10
+    },
+    scrollableContent: {
         flex: 1,
-        paddingTop: 15
+        backgroundColor: 'white'
     }
 })
