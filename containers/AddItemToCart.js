@@ -5,7 +5,6 @@ import { SafeAreaView, Text, View, StyleSheet, Modal } from 'react-native'
 import defStyles from './defaultStyles'
 
 
-
 export default class AddItemToCart extends Component {
 
     constructor(props) {
