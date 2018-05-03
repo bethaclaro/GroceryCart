@@ -12,9 +12,9 @@ export default class ListBadge extends Component {
     render() {
         return (
             <View style={{width: 120, flexDirection: 'row'}}>
-                <Ionicons name="ios-add-circle" size={30} />
-                <FormInput inputStyle={{width: 25, fontSize: 14, textAlign: 'center'}} keyboardType="numeric" />
-                <Ionicons name="ios-remove-circle" size={30} />
+                <Ionicons name="ios-add-circle" size={25} />
+                <FormInput inputStyle={{width: 35, fontSize: 14, textAlign: 'center'}} keyboardType="numeric" underlineColor="transparent" />
+                <Ionicons name="ios-remove-circle" size={25} />
             </View>
         )
     }

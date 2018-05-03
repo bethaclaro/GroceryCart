@@ -22,12 +22,14 @@ export default class Cart extends Component {
             {
                 barcode: "1234567890",
                 itemDescription: "Test Item 1",
-                price: 20.50
+                price: 20.50,
+                qty: 1
             },
             {
                 barcode: "0987654321",
                 itemDescription: "Test Item 2",
-                price: 30.50
+                price: 30.50,
+                qty: 1
             }
         ]
     }
@@ -55,13 +57,13 @@ export default class Cart extends Component {
 
                 <ScrollView style={defStyles.scrollableContent}>
 
-                    <List>
+                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                         {
                             this.tempData.map((rowData, i)=>{
                                 return <ListItem
                                     key={rowData.barcode}
-                                    title={rowData.itemDescription}
-                                    subtitle={"Price: " + rowData.price}
+                                    title={rowData.itemDescription + " @ " + rowData.price}
+                                    subtitle={"Subtotal: " + (rowData.price*rowData.qty).toLocaleString('en', {minimumFractionDigits:2})}
                                     hideChevron={true}
                                     onPress={this.onPressItem}
                                     badge={{element: <ListBadge />}}
