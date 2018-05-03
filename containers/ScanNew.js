@@ -38,11 +38,12 @@ export default class ScanNew extends Component {
                     </SafeAreaView>
                 </Modal>
                 
-                <View style={{alignItems: 'center', justifyContent: 'center', flex: 2}}>
+                <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                     <Text style={{color: 'white'}}>{this.scannedBarcode}</Text>
                 </View>
                 
                 <Button  title="Scan" onPress={this.onScanHandler} />
+
             </SafeAreaView>
         )
     }

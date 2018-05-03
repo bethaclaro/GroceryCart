@@ -3,10 +3,16 @@ import { StyleSheet, Dimensions } from 'react-native';
 // const width = Dimensions.get('window').width;
 // const height = Dimensions.get('window').height;
 
+// Color scheme
+// #E2EFF1
+// #65799B
+// #555273
+// #e23e57
+
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a3c40'
+        backgroundColor: '#E2EFF1'
       },
     header: {
         height: 50,
@@ -15,7 +21,7 @@ export default StyleSheet.create({
         flexDirection: 'row'
     },
     button: {
-        backgroundColor: '#137EA8',
+        backgroundColor: '#65799B',
         width: "50%"
     },
     menuContainer: {
