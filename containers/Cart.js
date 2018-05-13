@@ -5,6 +5,15 @@ import { observable, computed } from 'mobx'
 import { observer } from 'mobx-react/native'
 import { List, ListItem, ListView } from 'react-native-elements'
 import ListBadge from '../components/ListBadge'
+import { FloatingAction } from 'react-native-floating-action'
+
+const buttonActions = [
+    {
+        text: "Add",
+        name: "bt_add",
+        position: 1
+    }
+]
 
 
 @observer
@@ -17,6 +26,7 @@ export default class Cart extends Component {
         
         this.renderRow = this.renderRow.bind(this)
         this.onPressItem = this.onPressItem.bind(this)
+        this.onPressAdd = this.onPressAdd.bind(this)
 
         this.tempData = [
             {
@@ -32,6 +42,7 @@ export default class Cart extends Component {
                 qty: 1
             }
         ]
+
     }
 
     onPressItem(e) {
@@ -46,10 +57,14 @@ export default class Cart extends Component {
              />
     }
 
+    onPressAdd(e) {
+        console.log("main button pressed")
+    }
+
     render() {
         return (
             <SafeAreaView style={defStyles.container}>
-                
+
                 {/* spacer component */}
                 <View style={{flex: 0.10}} /> 
 
@@ -73,6 +88,8 @@ export default class Cart extends Component {
                     </List>
 
                 </ScrollView>
+
+                <FloatingAction onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
 
             </SafeAreaView>
         )
