@@ -6,32 +6,10 @@ import { Ionicons } from '@expo/vector-icons'
 import { Text } from 'react-native'
 
 
-export default TabNavigator({
-        Cart: {screen: Cart},
-        "Product List" : {screen: ProductList}
-    },
-    {
-        navigationOptions: ({navigation}) => ({
-            tabBarIcon: ({focused, tintColor}) =>{
-                const {routeName} = navigation.state
-                if(routeName==='Cart') {
-                    return <Ionicons name="ios-cart" size={25} color={tintColor} />
-                } else if (routeName==='Product List') {
-                    return <Ionicons name="ios-pricetag" size={25} color={tintColor} />
-                }
-            }
-        }),
-        tabBarOptions: {
-            style: {
-                height: 60,
-                paddingTop: 10
-            },
-            labelStyle: {
-                fontSize: 12,
-                fontWeight: "bold"
-            },
-            activeTintColor: "#65799B"
-        }
+export default class MainContainer extends Component {
+    render() {
+        return (
+            <Cart />
+        )
     }
-)
-
+}
