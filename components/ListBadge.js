@@ -1,20 +1,24 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { FormInput } from 'react-native-elements'
+
 
 export default class ListBadge extends Component {
 
-    constructor(props) {
-        super(props)
-    }
+    // constructor(props) {
+    //     super(props)
+    // }
 
     render() {
         return (
-            <View style={{width: 120, flexDirection: 'row'}}>
-                <Ionicons name="ios-add-circle" size={25} />
-                <FormInput inputStyle={{width: 35, fontSize: 14, textAlign: 'center'}} keyboardType="numeric" underlineColor="transparent" />
-                <Ionicons name="ios-remove-circle" size={25} />
+            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'nowrap'}}>
+                {/* <MaterialIcons name="add" size={35} style={{backgroundColor: 'white'}} onPress={this.onAdd(this.props.rowData.barcode)} /> */}
+                {/* <FormInput keyboardType="numeric"
+                    inputStyle={{width: 40, textAlign: 'center', fontSize: 14, backgroundColor: 'green', margin: 0, padding: 0}}
+                 /> */}
+                 <Text style={{fontSize: 16}}>Qty: {this.props.rowData.qty}  </Text>
+                <MaterialIcons name="edit" size={25} style={{backgroundColor: 'white'}} />
             </View>
         )
     }

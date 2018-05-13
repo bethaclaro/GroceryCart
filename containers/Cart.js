@@ -3,20 +3,20 @@ import { SafeAreaView, Text, View, ScrollView } from 'react-native'
 import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
 import { observer } from 'mobx-react/native'
-import { List, ListItem, ListView } from 'react-native-elements'
+import { List, ListItem, ListView, Button } from 'react-native-elements'
 import ListBadge from '../components/ListBadge'
+import { MaterialIcons } from '@expo/vector-icons'
 
 
 @observer
 export default class Cart extends Component {
 
     @observable cartTotal = 0
-    
+
     constructor(props) {
         super(props)
-        
-        this.renderRow = this.renderRow.bind(this)
-        this.onPressItem = this.onPressItem.bind(this)
+
+        this.onAddNew = this.onAddNew.bind(this)
 
         this.tempData = [
             {
@@ -29,21 +29,17 @@ export default class Cart extends Component {
                 barcode: "0987654321",
                 itemDescription: "Test Item 2",
                 price: 30.50,
-                qty: 1
+                qty: 2
             }
         ]
     }
 
     onPressItem(e) {
-        console.log("pressed " + e)
+        console.log(e)
     }
 
-    renderRow(rowData, barcode) {
-        return <ListItem
-            key={barcode}
-            title={rowData.itemDescription}
-            subtitle={rowData.price}
-             />
+    onAddNew() {
+
     }
 
     render() {
@@ -51,7 +47,7 @@ export default class Cart extends Component {
             <SafeAreaView style={defStyles.container}>
                 
                 {/* spacer component */}
-                <View style={{flex: 0.10}} /> 
+                <View style={{flex: 0.01}} />
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
@@ -63,10 +59,12 @@ export default class Cart extends Component {
                                 return <ListItem
                                     key={rowData.barcode}
                                     title={rowData.itemDescription + " @ " + rowData.price}
+                                    titleStyle={{fontSize: 15}}
                                     subtitle={"Subtotal: " + (rowData.price*rowData.qty).toLocaleString('en', {minimumFractionDigits:2})}
+                                    subtitleStyle={{fontSize: 14}}
                                     hideChevron={true}
-                                    onPress={this.onPressItem}
-                                    badge={{element: <ListBadge />}}
+                                    onPress={this.onPressItem.bind(this, rowData.barcode)}
+                                    badge={{element: <ListBadge rowData={rowData}/>}}
                                 />
                             })
                         }

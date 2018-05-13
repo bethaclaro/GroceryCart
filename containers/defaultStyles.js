@@ -43,6 +43,8 @@ export default StyleSheet.create({
     },
     scrollableContent: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        padding: 0,
+        margin: 0
     }
 })
