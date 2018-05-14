@@ -1,32 +1,30 @@
 import React, { Component } from 'react'
-import { SafeAreaView, Text, View, ScrollView } from 'react-native'
+import { SafeAreaView, Text, View, ScrollView, TouchableWithoutFeedback } from 'react-native'
 import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
-import { observer } from 'mobx-react/native'
+import { observer, inject } from 'mobx-react/native'
 import { List, ListItem, ListView } from 'react-native-elements'
 import ListBadge from '../components/ListBadge'
 import { FloatingAction } from 'react-native-floating-action'
-
-const buttonActions = [
-    {
-        text: "Add",
-        name: "bt_add",
-        position: 1
-    }
-]
+import { MaterialIcons } from '@expo/vector-icons'
 
 
+@inject('appStore')
 @observer
 export default class Cart extends Component {
 
     @observable cartTotal = 0
+    @observable selectedItem
     
     constructor(props) {
         super(props)
         
+        this.appStore = this.props.appStore
         this.renderRow = this.renderRow.bind(this)
         this.onPressItem = this.onPressItem.bind(this)
         this.onPressAdd = this.onPressAdd.bind(this)
+        this.onPressEdit = this.onPressEdit.bind(this)
+        this.onPressOutside = this.onPressOutside.bind(this)
 
         this.tempData = [
             {
@@ -46,7 +44,9 @@ export default class Cart extends Component {
     }
 
     onPressItem(e) {
-        console.log("pressed " + e)
+        // console.log("pressed " + e)
+        this.props.appStore.toggleCartAddMode(false)
+        this.selectedItem = e
     }
 
     renderRow(rowData, barcode) {
@@ -58,38 +58,53 @@ export default class Cart extends Component {
     }
 
     onPressAdd(e) {
-        console.log("main button pressed")
+        console.log("add button pressed")
+    }
+
+    onPressEdit(e) {
+        console.log("edit button pressed")
+    }
+
+    onPressOutside(e) {
+        // console.log("pressed outside")
+        this.appStore.toggleCartAddMode(true)
     }
 
     render() {
         return (
-            <SafeAreaView style={defStyles.container}>
+            <SafeAreaView style={defStyles.container} onPress={this.onPressOutside}>
 
                 {/* spacer component */}
-                <View style={{flex: 0.10}} /> 
+                {/* <View style={{flex: 0.10}} /> */}
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
-                <ScrollView style={defStyles.scrollableContent}>
-
-                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-                        {
-                            this.tempData.map((rowData, i)=>{
-                                return <ListItem
-                                    key={rowData.barcode}
-                                    title={rowData.itemDescription + " @ " + rowData.price}
-                                    subtitle={"Subtotal: " + (rowData.price*rowData.qty).toLocaleString('en', {minimumFractionDigits:2})}
-                                    hideChevron={true}
-                                    onPress={this.onPressItem}
-                                    badge={{element: <ListBadge />}}
-                                />
-                            })
-                        }
-                    </List>
-
+                <ScrollView style={defStyles.scrollableContent} onResponderRelease={this.onPressOutside}>
+                    
+                    <TouchableWithoutFeedback onPress={this.onPressOutside} style={{backgroundColor: 'blue', flex: 1}}>
+                        <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                            {
+                                this.tempData.map((rowData, i)=>{
+                                    return <ListItem
+                                        key={rowData.barcode}
+                                        title={rowData.itemDescription + " @ " + rowData.price}
+                                        subtitle={"Subtotal: " + (rowData.price*rowData.qty).toLocaleString('en', {minimumFractionDigits:2})}
+                                        hideChevron={true}
+                                        onPress={this.onPressItem}
+                                        badge={{element: <ListBadge />}}
+                                    />
+                                })
+                            }
+                        </List>
+                    </TouchableWithoutFeedback>
                 </ScrollView>
 
-                <FloatingAction onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
+                <FloatingAction visible={this.appStore.cartAddMode}
+                    floatingIcon={<MaterialIcons name="add" size={20} color="white" />}
+                    color='#65799B' position='center' onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
+                <FloatingAction visible={!this.appStore.cartAddMode}
+                    floatingIcon={<MaterialIcons name="edit" size={20} color="white" />} 
+                    color='#65799B' position='center' onPressMain={this.onPressEdit} actions={[]} showBackground={false} />
 
             </SafeAreaView>
         )

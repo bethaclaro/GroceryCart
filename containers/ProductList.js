@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import { SafeAreaView, Text } from 'react-native'
+import { FloatingAction } from 'react-native-floating-action'
+
+
+
 
 export default class ProductList extends Component {
 
@@ -9,8 +13,8 @@ export default class ProductList extends Component {
 
     render() {
         return (
-            <SafeAreaView>
-                <Text>Product List</Text>
+            <SafeAreaView style={{flex: 1}}>
+                <FloatingAction onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
             </SafeAreaView>
         )
     }
