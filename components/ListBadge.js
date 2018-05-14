@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { MaterialIcons } from '@expo/vector-icons'
 import { FormInput } from 'react-native-elements'
 
 export default class ListBadge extends Component {
@@ -12,10 +12,9 @@ export default class ListBadge extends Component {
     render() {
         return (
             <View style={{width: 120, flexDirection: 'row'}}>
-                <Text>Qty: </Text>
-                {/* <Ionicons name="ios-add-circle" size={25} /> */}
-                {/* <FormInput inputStyle={{width: 35, fontSize: 14, textAlign: 'center'}} keyboardType="numeric" underlineColor="transparent" /> */}
-                {/* <Ionicons name="ios-remove-circle" size={25} /> */}
+                <Text style={{flex: 0.5}}>Qty: {this.props.item.qty}</Text>
+                <MaterialIcons style={{flex: 0.5, textAlign: 'right'}} name="delete" size={20} 
+                    color="black" onPress={this.props.onPressDeleteOnItem} />
             </View>
         )
     }

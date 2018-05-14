@@ -9,17 +9,17 @@ import { FloatingAction } from 'react-native-floating-action'
 import { MaterialIcons } from '@expo/vector-icons'
 
 
-@inject('appStore')
+// @inject('appStore')
 @observer
 export default class Cart extends Component {
 
     @observable cartTotal = 0
     @observable selectedItem
+    @observable addMode = true
     
     constructor(props) {
         super(props)
         
-        this.appStore = this.props.appStore
         this.renderRow = this.renderRow.bind(this)
         this.onPressItem = this.onPressItem.bind(this)
         this.onPressAdd = this.onPressAdd.bind(this)
@@ -45,7 +45,7 @@ export default class Cart extends Component {
 
     onPressItem(e) {
         // console.log("pressed " + e)
-        this.props.appStore.toggleCartAddMode(false)
+        this.addMode = !this.addMode
         this.selectedItem = e
     }
 
@@ -67,7 +67,11 @@ export default class Cart extends Component {
 
     onPressOutside(e) {
         // console.log("pressed outside")
-        this.appStore.toggleCartAddMode(true)
+        this.addMode = true
+    }
+
+    onPressDeleteOnItem(e, item) {
+        console.log("delete on " + e)
     }
 
     render() {
@@ -79,9 +83,7 @@ export default class Cart extends Component {
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
-                <ScrollView style={defStyles.scrollableContent} onResponderRelease={this.onPressOutside}>
-                    
-                    <TouchableWithoutFeedback onPress={this.onPressOutside} style={{backgroundColor: 'blue', flex: 1}}>
+                <ScrollView style={defStyles.scrollableContent} onTouchStart={this.onPressOutside}>
                         <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                             {
                                 this.tempData.map((rowData, i)=>{
@@ -91,21 +93,25 @@ export default class Cart extends Component {
                                         subtitle={"Subtotal: " + (rowData.price*rowData.qty).toLocaleString('en', {minimumFractionDigits:2})}
                                         hideChevron={true}
                                         onPress={this.onPressItem}
-                                        badge={{element: <ListBadge />}}
+                                        badge={{element: <ListBadge item={rowData} onPressDeleteOnItem={this.onPressDeleteOnItem.bind(this, rowData.barcode)} />}}
                                     />
                                 })
                             }
                         </List>
-                    </TouchableWithoutFeedback>
                 </ScrollView>
 
-                <FloatingAction visible={this.appStore.cartAddMode}
+                <FloatingAction visible={this.addMode}
                     floatingIcon={<MaterialIcons name="add" size={20} color="white" />}
-                    color='#65799B' position='center' onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
-                <FloatingAction visible={!this.appStore.cartAddMode}
-                    floatingIcon={<MaterialIcons name="edit" size={20} color="white" />} 
-                    color='#65799B' position='center' onPressMain={this.onPressEdit} actions={[]} showBackground={false} />
+                    color='#65799B' position="center" onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
 
+                <FloatingAction visible={!this.addMode}
+                    floatingIcon={<MaterialIcons name="edit" size={20} color="white" />} 
+                    color='#65799B' position="center" onPressMain={this.onPressEdit} actions={[]} showBackground={false} />
+
+                {/* <FloatingAction visible={}
+                    floatingIcon={<MaterialIcons name="delete" size={20} color="white" />}
+                    color="#65799B" position="center" actions={[]} showBackground={false} /> */}
+                    
             </SafeAreaView>
         )
     }
