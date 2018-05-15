@@ -31,15 +31,14 @@ export default StyleSheet.create({
         justifyContent: 'center',
     },
     resultText: {
-        height: 70,
-        backgroundColor: '#8ea6b4',
+        height: 100,
+        lineHeight: 100,
+        backgroundColor: '#393e46',
         color: 'white',
-        fontSize: 35,
+        fontSize: 40,
         textAlign: 'right',
         textAlignVertical: 'center',
         paddingRight: 20,
-        paddingTop: 10,
-        paddingBottom: 10
     },
     scrollableContent: {
         flex: 1,
