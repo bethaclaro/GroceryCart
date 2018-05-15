@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { SafeAreaView, Text, View, ScrollView, StyleSheet } from 'react-native'
+import { SafeAreaView, Text, View, ScrollView, StyleSheet, Picker } from 'react-native'
 import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
 import { observer, inject } from 'mobx-react/native'
-import { List, ListItem, ListView } from 'react-native-elements'
-import ListBadge from '../components/ListBadge'
+// import { List, ListItem, ListView } from 'react-native-elements'
+// import ListBadge from '../components/ListBadge'
+import ShowPicker from '../components/ShowPicker'
 import { FloatingAction } from 'react-native-floating-action'
 import { MaterialIcons } from '@expo/vector-icons'
 import CardStack, { Card } from 'react-native-card-stack-swiper'
@@ -18,6 +19,8 @@ export default class Cart extends Component {
     @observable cartTotal = 0
     @observable selectedItem
     @observable addMode = true
+    @observable pickerModalVisible = false
+    @observable currentIndex = 0
     
     constructor(props) {
         super(props)
@@ -25,29 +28,45 @@ export default class Cart extends Component {
         this.renderRow = this.renderRow.bind(this)
         this.onPressItem = this.onPressItem.bind(this)
         this.onPressAdd = this.onPressAdd.bind(this)
-        this.onPressEdit = this.onPressEdit.bind(this)
+        // this.onTapCard = this.onTapCard.bind(this)
         this.onPressOutside = this.onPressOutside.bind(this)
+        this.onCancelModal = this.onCancelModal.bind(this)
+
         this.onSwipeUp = this.onSwipeUp.bind(this)
+        this.onSwipeLeft = this.onSwipeLeft.bind(this)
+        this.onSwipeRight = this.onSwipeRight.bind(this)
+        this.onSwipeDown = this.onSwipeDown.bind(this)
 
         this.tempData = [
             {
                 barcode: "1234567890",
-                itemDescription: "Test Item 1",
+                itemDescription: "Test Item 0",
                 price: 20.50,
                 qty: 1
             },
             {
                 barcode: "0987654321",
-                itemDescription: "Test Item 2",
+                itemDescription: "Test Item 1",
                 price: 30.50,
-                qty: 1
+                qty: 2
+            },
+            {
+                barcode: "2351627381",
+                itemDescription: "Test Item 2",
+                price: 10.50,
+                qty: 3
+            },
+            {
+                barcode: "8904637182",
+                itemDescription: "Test Item 3",
+                price: 50.50,
+                qty: 4
             }
         ]
 
     }
 
     onPressItem(e) {
-        // console.log("pressed " + e)
         this.addMode = !this.addMode
         this.selectedItem = e
     }
@@ -64,10 +83,6 @@ export default class Cart extends Component {
         console.log("add button pressed")
     }
 
-    onPressEdit(e) {
-        console.log("edit button pressed")
-    }
-
     onPressOutside(e) {
         this.addMode = true
     }
@@ -79,15 +94,42 @@ export default class Cart extends Component {
     onSwipeUp(e) {
         console.log("swipe up!")
     }
+    
+    onSwipeLeft(e) {
+        this.moveCurrentIndex()
+    }
+
+    moveCurrentIndex() {
+        if((this.tempData.length-1)==this.currentIndex) {
+            this.currentIndex = 0
+        } else {
+            this.currentIndex++
+        }
+    }
+
+    onSwipeRight(e){
+        this.moveCurrentIndex()        
+    }
+
+    onSwipeDown(e) {
+        this.swiper.goBackFromBottom()
+        this.pickerModalVisible = true
+    }
 
     renderCards() {
         return (
             <CardStack style={styles.content} ref={swiper => { this.swiper = swiper }}
-                        loop={true} disableBottomSwipe={true} verticalSwipe={true} onSwipedTop={this.onSwipeUp}>
+                        loop={true} verticalSwipe={true}
+                        onSwipedBottom={this.onSwipeDown}
+                        onSwipedTop={this.onSwipeUp} onSwipedLeft={this.onSwipeLeft} onSwipedRight={this.onSwipeRight}>
                 {this.tempData.map((item)=>{
                     return <Card style={[styles.card, styles.card1]} key={item.barcode}>
                         <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
-                        <Text style={styles.label}>{item.itemDescription}</Text>
+                        <Text style={[styles.text, styles.itemDescription]}>{item.itemDescription}</Text>
+                        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
+                            <Text style={[styles.text, {fontSize: 16, marginBottom: 10}]}>Quantity <MaterialIcons name="edit" size={20} color='gray'/></Text>
+                            <Text style={[styles.text, {fontSize: 22, fontWeight: 'bold', marginBottom: 10}]}>{item.qty}</Text>
+                        </View>
                     </Card>
                 })}
             </CardStack>
@@ -95,12 +137,15 @@ export default class Cart extends Component {
         
     }
 
+    onCancelModal() {
+        this.pickerModalVisible = false
+    }
+
     render() {
         return (
-            <SafeAreaView style={defStyles.container} onPress={this.onPressOutside}>
+            <SafeAreaView style={defStyles.container} onPress={this.onPressOutside} >
 
-                {/* spacer component */}
-                {/* <View style={{flex: 0.10}} /> */}
+                <ShowPicker visible={this.pickerModalVisible} selectedValue={this.tempData[this.currentIndex].qty} onCancel={this.onCancelModal} />
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
@@ -109,12 +154,8 @@ export default class Cart extends Component {
                 </View>
 
                 <FloatingAction visible={this.addMode} distanceToEdge={50}
-                    floatingIcon={<MaterialIcons name="add" size={20} color="white" />}
+                    floatingIcon={<MaterialIcons name="add" size={40} color="white" />}
                     color='#65799B' position="center" onPressMain={this.onPressAdd} actions={[]} showBackground={false} />
-
-                <FloatingAction visible={!this.addMode} distanceToEdge={50}
-                    floatingIcon={<MaterialIcons name="edit" size={20} color="white" />} 
-                    color='#65799B' position="center" onPressMain={this.onPressEdit} actions={[]} showBackground={false} />
 
             </SafeAreaView>
         )
@@ -135,7 +176,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: 300,
-        height: 450,
+        height: 400,
         borderRadius: 5,
         shadowColor: 'rgba(0,0,0,0.5)',
         shadowOffset: {
@@ -157,6 +198,21 @@ const styles = StyleSheet.create({
       fontFamily: 'System',
       color: 'black',
       backgroundColor: 'transparent',
+    },
+    text: {
+        fontFamily: 'System',
+        backgroundColor: 'transparent',
+        // backgroundColor: 'blue',
+        color: 'black'
+    },
+    itemDescription: {
+        lineHeight: 100,
+        textAlign: 'center',
+        fontSize: 30,
+    },
+    qty: {
+        fontSize: 20,
+        textAlign: 'center'
     },
     footer:{
       flex:1,
