@@ -36,6 +36,7 @@ export default class Cart extends Component {
 
     onDeleteSwipe(e) {
         console.log("swipe up! delete item at index " + e)
+        this.swipedIndex = 0
         this.appStore.removeFromCart(e)
     }
     
@@ -53,7 +54,11 @@ export default class Cart extends Component {
             <View style={[styles.card, styles.card1]}>
                 <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
                 <Text style={[styles.text, styles.itemDescription]}>{item.itemDescription}</Text>
-                <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
+                <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={[styles.text, {fontSize: 16, marginBottom: 10}]}>Price: </Text>
+                    <Text style={[styles.text, {fontSize: 22, fontWeight: 'bold', marginBottom: 10}]}>{item.price}</Text>
+                </View>
+                <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 20}} >
                     <Text style={[styles.text, {fontSize: 16, marginBottom: 10}]}>Quantity <MaterialIcons name="edit" size={20} color='gray'/></Text>
                     <Text style={[styles.text, {fontSize: 22, fontWeight: 'bold', marginBottom: 10}]}>{item.qty}</Text>
                 </View>

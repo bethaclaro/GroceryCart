@@ -8,7 +8,14 @@ export default class AppStore {
     @observable cartList = []
 
     @computed get totalInCart() {
-        return 12345.00
+        // return 12345.00
+        let total = 0
+        let cart = this.cartList
+        cart.map((item)=>{
+            let subtotal = item.qty * item.price
+            total = total + subtotal
+        })
+        return total
     }
 
     @action("sets cart list")
@@ -23,7 +30,9 @@ export default class AppStore {
 
     @action("removes from cart")
     removeFromCart(itemIndex) {
-        //removing from cart means readjusting the totals
+        console.log("HERE")
         this.cartList.splice(itemIndex, 1)
+        console.log("new cartlist")
+        console.log(this.cartList)
     }
 }

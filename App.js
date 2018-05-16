@@ -35,6 +35,7 @@ const tempData = [
   }
 ]
 
+// TO DO: Remove once local data storage has been setup
 stores.appStore.setCartList(tempData)
 
 export default class App extends Component {
