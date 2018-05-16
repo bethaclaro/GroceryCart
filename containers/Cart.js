@@ -35,9 +35,8 @@ export default class Cart extends Component {
     }
 
     onDeleteSwipe(e) {
-        console.log("swipe up! delete item at index " + e)
+        this.appStore.removeFromCart(this.appStore.cartList[e])
         this.swipedIndex = 0
-        this.appStore.removeFromCart(e)
     }
     
     onEditTap(e) {
@@ -70,7 +69,8 @@ export default class Cart extends Component {
         return (
             <SafeAreaView style={defStyles.container} onPress={this.onPressOutside} >
 
-                <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal} selectedValue={this.appStore.cartList[this.swipedIndex].qty} /> 
+                <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal}
+                    selectedValue={this.appStore.cartList.length>0 ? this.appStore.cartList[this.swipedIndex].qty : 0} /> 
 
                 <Text style={defStyles.resultText}>{this.appStore.totalInCart.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
@@ -79,7 +79,7 @@ export default class Cart extends Component {
                         ref={swiper => {this.swiper = swiper}}
                         cards={this.appStore.cartList} 
                         renderCard={this.renderCard}
-                        infinite={true} showSecondCard={true} stackSize={this.appStore.cartList.length}
+                        infinite={true} //showSecondCard={true} stackSize={this.appStore.cartList.length}
                         disableBottomSwipe={true}
                         onSwipedTop={this.onDeleteSwipe} onTapCard={this.onEditTap} 
                         cardIndex={this.swipedIndex}
