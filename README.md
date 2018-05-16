@@ -3,12 +3,12 @@ tentative name
 
 ## Installation
 
-Install expo
+1. Install [Expo](https://docs.expo.io/versions/latest/introduction/installation.html)
+2. Install Expo's client app for [iOS](https://itunes.com/apps/exponent) / [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
-```npm install exp -g
 
-Then
+## Run
 
-```npm install && npm start
-
-Scan QR code or open the Expo client app for Android/iOS.
+1. npm install
+2. npm start
+3. Scan QR code or open the Expo client app for Android/iOS.
