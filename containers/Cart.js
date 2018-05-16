@@ -20,7 +20,7 @@ export default class Cart extends Component {
     @observable selectedItem
     @observable addMode = true
     @observable pickerModalVisible = false
-    @observable currentIndex = 0
+    @observable swipedIndex = 0
     
     constructor(props) {
         super(props)
@@ -33,8 +33,9 @@ export default class Cart extends Component {
         this.onCancelModal = this.onCancelModal.bind(this)
 
         this.onSwipeUp = this.onSwipeUp.bind(this)
-        this.onSwipeLeft = this.onSwipeLeft.bind(this)
-        this.onSwipeRight = this.onSwipeRight.bind(this)
+        // this.onSwipeLeft = this.onSwipeLeft.bind(this)
+        // this.onSwipeRight = this.onSwipeRight.bind(this)
+        this.moveCurrentIndex = this.moveCurrentIndex.bind(this)
         this.onSwipeDown = this.onSwipeDown.bind(this)
 
         this.tempData = [
@@ -87,32 +88,16 @@ export default class Cart extends Component {
         this.addMode = true
     }
 
-    onPressDeleteOnItem(e, item) {
-        console.log("delete on " + e)
-    }
-
     onSwipeUp(e) {
         console.log("swipe up!")
     }
     
-    onSwipeLeft(e) {
-        this.moveCurrentIndex()
-    }
-
-    moveCurrentIndex() {
-        if((this.tempData.length-1)==this.currentIndex) {
-            this.currentIndex = 0
-        } else {
-            this.currentIndex++
-        }
-    }
-
-    onSwipeRight(e){
-        this.moveCurrentIndex()        
+    moveCurrentIndex(e) {
+        this.swipedIndex = e
     }
 
     onSwipeDown(e) {
-        this.swiper.goBackFromBottom()
+        this.swipedIndex = e
         this.pickerModalVisible = true
     }
 
@@ -121,7 +106,9 @@ export default class Cart extends Component {
             <CardStack style={styles.content} ref={swiper => { this.swiper = swiper }}
                         loop={true} verticalSwipe={true}
                         onSwipedBottom={this.onSwipeDown}
-                        onSwipedTop={this.onSwipeUp} onSwipedLeft={this.onSwipeLeft} onSwipedRight={this.onSwipeRight}>
+                        onSwipedTop={this.onSwipeUp}
+                        // onSwipedLeft={this.moveCurrentIndex} onSwipedRight={this.moveCurrentIndex}
+                >
                 {this.tempData.map((item)=>{
                     return <Card style={[styles.card, styles.card1]} key={item.barcode}>
                         <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
@@ -139,13 +126,15 @@ export default class Cart extends Component {
 
     onCancelModal() {
         this.pickerModalVisible = false
+        // this.swiper.goBackFromBottom()
     }
 
     render() {
         return (
             <SafeAreaView style={defStyles.container} onPress={this.onPressOutside} >
 
-                <ShowPicker visible={this.pickerModalVisible} selectedValue={this.tempData[this.currentIndex].qty} onCancel={this.onCancelModal} />
+                <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal} selectedValue={this.tempData[this.swipedIndex].qty} /> 
+                {/* selectedValue={this.getSelectedValue()} */}
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 

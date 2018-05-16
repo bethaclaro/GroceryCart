@@ -12,7 +12,6 @@ export default class CustomDrawer extends Component {
 
     render() {
         const { routes } = this.props.navigation
-        console.log(routes)
         return (
             <ScrollView>
                 <SafeAreaView>
