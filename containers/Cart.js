@@ -9,11 +9,10 @@ import { MaterialIcons } from '@expo/vector-icons'
 import Swiper from 'react-native-deck-swiper'
 
 
-// @inject('appStore')
+@inject('appStore')
 @observer
 export default class Cart extends Component {
 
-    @observable cartTotal = 0
     @observable selectedItem
     @observable addMode = true
     @observable pickerModalVisible = false
@@ -22,38 +21,12 @@ export default class Cart extends Component {
     constructor(props) {
         super(props)
         
+        this.appStore = this.props.appStore
         this.onPressAdd = this.onPressAdd.bind(this)
         this.onCancelModal = this.onCancelModal.bind(this)
 
         this.onDeleteSwipe = this.onDeleteSwipe.bind(this)
         this.onEditTap = this.onEditTap.bind(this)
-
-        this.tempData = [
-            {
-                barcode: "1234567890",
-                itemDescription: "Test Item 0",
-                price: 20.50,
-                qty: 1
-            },
-            {
-                barcode: "0987654321",
-                itemDescription: "Test Item 1",
-                price: 30.50,
-                qty: 2
-            },
-            {
-                barcode: "2351627381",
-                itemDescription: "Test Item 2",
-                price: 10.50,
-                qty: 3
-            },
-            {
-                barcode: "8904637182",
-                itemDescription: "Test Item 3",
-                price: 50.50,
-                qty: 4
-            }
-        ]
 
     }
 
@@ -62,7 +35,8 @@ export default class Cart extends Component {
     }
 
     onDeleteSwipe(e) {
-        console.log("swipe up! delete!")
+        console.log("swipe up! delete item at index " + e)
+        this.appStore.removeFromCart(e)
     }
     
     onEditTap(e) {
@@ -91,16 +65,16 @@ export default class Cart extends Component {
         return (
             <SafeAreaView style={defStyles.container} onPress={this.onPressOutside} >
 
-                <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal} selectedValue={this.tempData[this.swipedIndex].qty} /> 
+                <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal} selectedValue={this.appStore.cartList[this.swipedIndex].qty} /> 
 
-                <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
+                <Text style={defStyles.resultText}>{this.appStore.totalInCart.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
                 <View style={styles.container} >
                    <Swiper cardStyle={styles.cardContainer} backgroundColor="gray"
                         ref={swiper => {this.swiper = swiper}}
-                        cards={this.tempData} 
+                        cards={this.appStore.cartList} 
                         renderCard={this.renderCard}
-                        infinite={true} showSecondCard={true} stackSize={this.tempData.length}
+                        infinite={true} showSecondCard={true} stackSize={this.appStore.cartList.length}
                         disableBottomSwipe={true}
                         onSwipedTop={this.onDeleteSwipe} onTapCard={this.onEditTap} 
                         cardIndex={this.swipedIndex}
@@ -133,7 +107,7 @@ const styles = StyleSheet.create({
     },
     card: {
         width: 300,
-        height: 300,
+        height: 400,
         borderRadius: 5,
         shadowColor: 'rgba(0,0,0,0.5)',
         shadowOffset: {
