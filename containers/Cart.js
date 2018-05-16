@@ -3,13 +3,10 @@ import { SafeAreaView, Text, View, ScrollView, StyleSheet, Picker } from 'react-
 import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
 import { observer, inject } from 'mobx-react/native'
-// import { List, ListItem, ListView } from 'react-native-elements'
-// import ListBadge from '../components/ListBadge'
 import ShowPicker from '../components/ShowPicker'
 import { FloatingAction } from 'react-native-floating-action'
 import { MaterialIcons } from '@expo/vector-icons'
-import CardStack, { Card } from 'react-native-card-stack-swiper'
-
+import Swiper from 'react-native-deck-swiper'
 
 
 // @inject('appStore')
@@ -25,18 +22,11 @@ export default class Cart extends Component {
     constructor(props) {
         super(props)
         
-        this.renderRow = this.renderRow.bind(this)
-        this.onPressItem = this.onPressItem.bind(this)
         this.onPressAdd = this.onPressAdd.bind(this)
-        // this.onTapCard = this.onTapCard.bind(this)
-        this.onPressOutside = this.onPressOutside.bind(this)
         this.onCancelModal = this.onCancelModal.bind(this)
 
-        this.onSwipeUp = this.onSwipeUp.bind(this)
-        // this.onSwipeLeft = this.onSwipeLeft.bind(this)
-        // this.onSwipeRight = this.onSwipeRight.bind(this)
-        this.moveCurrentIndex = this.moveCurrentIndex.bind(this)
-        this.onSwipeDown = this.onSwipeDown.bind(this)
+        this.onDeleteSwipe = this.onDeleteSwipe.bind(this)
+        this.onEditTap = this.onEditTap.bind(this)
 
         this.tempData = [
             {
@@ -67,66 +57,34 @@ export default class Cart extends Component {
 
     }
 
-    onPressItem(e) {
-        this.addMode = !this.addMode
-        this.selectedItem = e
-    }
-
-    renderRow(rowData, barcode) {
-        return <ListItem
-            key={barcode}
-            title={rowData.itemDescription}
-            subtitle={rowData.price}
-             />
-    }
-
     onPressAdd(e) {
         console.log("add button pressed")
     }
 
-    onPressOutside(e) {
-        this.addMode = true
-    }
-
-    onSwipeUp(e) {
-        console.log("swipe up!")
+    onDeleteSwipe(e) {
+        console.log("swipe up! delete!")
     }
     
-    moveCurrentIndex(e) {
-        this.swipedIndex = e
-    }
-
-    onSwipeDown(e) {
+    onEditTap(e) {
         this.swipedIndex = e
         this.pickerModalVisible = true
     }
 
-    renderCards() {
-        return (
-            <CardStack style={styles.content} ref={swiper => { this.swiper = swiper }}
-                        loop={true} verticalSwipe={true}
-                        onSwipedBottom={this.onSwipeDown}
-                        onSwipedTop={this.onSwipeUp}
-                        // onSwipedLeft={this.moveCurrentIndex} onSwipedRight={this.moveCurrentIndex}
-                >
-                {this.tempData.map((item)=>{
-                    return <Card style={[styles.card, styles.card1]} key={item.barcode}>
-                        <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
-                        <Text style={[styles.text, styles.itemDescription]}>{item.itemDescription}</Text>
-                        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
-                            <Text style={[styles.text, {fontSize: 16, marginBottom: 10}]}>Quantity <MaterialIcons name="edit" size={20} color='gray'/></Text>
-                            <Text style={[styles.text, {fontSize: 22, fontWeight: 'bold', marginBottom: 10}]}>{item.qty}</Text>
-                        </View>
-                    </Card>
-                })}
-            </CardStack>
-        )
-        
-    }
-
     onCancelModal() {
         this.pickerModalVisible = false
-        // this.swiper.goBackFromBottom()
+    }
+
+    renderCard(item) {
+        return (
+            <View style={[styles.card, styles.card1]}>
+                <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
+                <Text style={[styles.text, styles.itemDescription]}>{item.itemDescription}</Text>
+                <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
+                    <Text style={[styles.text, {fontSize: 16, marginBottom: 10}]}>Quantity <MaterialIcons name="edit" size={20} color='gray'/></Text>
+                    <Text style={[styles.text, {fontSize: 22, fontWeight: 'bold', marginBottom: 10}]}>{item.qty}</Text>
+                </View>
+            </View>
+        )
     }
 
     render() {
@@ -134,12 +92,19 @@ export default class Cart extends Component {
             <SafeAreaView style={defStyles.container} onPress={this.onPressOutside} >
 
                 <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal} selectedValue={this.tempData[this.swipedIndex].qty} /> 
-                {/* selectedValue={this.getSelectedValue()} */}
 
                 <Text style={defStyles.resultText}>{this.cartTotal.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
                 <View style={styles.container} >
-                    {this.renderCards()}
+                   <Swiper cardStyle={styles.cardContainer} backgroundColor="gray"
+                        ref={swiper => {this.swiper = swiper}}
+                        cards={this.tempData} 
+                        renderCard={this.renderCard}
+                        infinite={true} showSecondCard={true} stackSize={this.tempData.length}
+                        disableBottomSwipe={true}
+                        onSwipedTop={this.onDeleteSwipe} onTapCard={this.onEditTap} 
+                        cardIndex={this.swipedIndex}
+                   />
                 </View>
 
                 <FloatingAction visible={this.addMode} distanceToEdge={50}
@@ -152,20 +117,23 @@ export default class Cart extends Component {
 }
 
 const styles = StyleSheet.create({
+    cardContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+    }, 
     container: {
       flex: 1,
-      flexDirection: 'column',
-      backgroundColor: 'white'
     },
     content:{
       flex: 1,
+      flexDirection: 'column',
       alignItems: 'center',
-      marginTop: 60
-    //   justifyContent: 'center',
+      justifyContent: 'center',
     },
     card: {
         width: 300,
-        height: 400,
+        height: 300,
         borderRadius: 5,
         shadowColor: 'rgba(0,0,0,0.5)',
         shadowOffset: {
