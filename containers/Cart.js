@@ -4,6 +4,7 @@ import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
 import { observer, inject } from 'mobx-react/native'
 import ShowPicker from '../components/ShowPicker'
+import ShowScanner from '../components/ShowScanner'
 import { FloatingAction } from 'react-native-floating-action'
 import { MaterialIcons } from '@expo/vector-icons'
 import Swiper from 'react-native-deck-swiper'
@@ -16,6 +17,7 @@ export default class Cart extends Component {
     @observable selectedItem
     @observable addMode = true
     @observable pickerModalVisible = false
+    @observable scannerModalVisible = false
     @observable swipedIndex = 0
     
     constructor(props) {
@@ -24,6 +26,8 @@ export default class Cart extends Component {
         this.appStore = this.props.appStore
         this.onPressAdd = this.onPressAdd.bind(this)
         this.onCancelModal = this.onCancelModal.bind(this)
+        this.onCancelScannerModal = this.onCancelScannerModal.bind(this)
+        this.onBarcodeScanned = this.onBarcodeScanned.bind(this)
 
         this.onDeleteSwipe = this.onDeleteSwipe.bind(this)
         this.onEditTap = this.onEditTap.bind(this)
@@ -31,7 +35,8 @@ export default class Cart extends Component {
     }
 
     onPressAdd(e) {
-        console.log("add button pressed")
+        // console.log("add button pressed")
+        this.scannerModalVisible = true
     }
 
     onDeleteSwipe(e) {
@@ -48,9 +53,17 @@ export default class Cart extends Component {
         this.pickerModalVisible = false
     }
 
+    onCancelScannerModal() {
+        this.scannerModalVisible = false
+    }
+
+    onBarcodeScanned(e) {
+        this.props.navigation.navigate("ProductList")
+    }
+
     renderCard(item) {
         return (
-            <View style={[styles.card, styles.card1]}>
+            <View style={[styles.card, styles.card1, {paddingTop: 20, borderRadius: 20}]}>
                 <Text style={{padding: 10}}>Barcode: {item.barcode}</Text>
                 <Text style={[styles.text, styles.itemDescription]}>{item.itemDescription}</Text>
                 <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
@@ -71,6 +84,9 @@ export default class Cart extends Component {
 
                 <ShowPicker visible={this.pickerModalVisible} onCancel={this.onCancelModal}
                     selectedValue={this.appStore.cartList.length>0 ? this.appStore.cartList[this.swipedIndex].qty : 0} /> 
+
+                <ShowScanner visible={this.scannerModalVisible} onCancel={this.onCancelScannerModal}
+                    appStore={this.appStore} onBarcodeScanned={this.onBarcodeScanned} />
 
                 <Text style={defStyles.resultText}>{this.appStore.totalInCart.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
@@ -113,7 +129,7 @@ const styles = StyleSheet.create({
     card: {
         width: 300,
         height: 400,
-        borderRadius: 5,
+        borderRadius: 20,
         shadowColor: 'rgba(0,0,0,0.5)',
         shadowOffset: {
         width: 0,
@@ -122,6 +138,7 @@ const styles = StyleSheet.create({
         shadowOpacity:0.5,
     },
     card1: {
+        borderRadius: 20,
         backgroundColor: '#EEEEEE',
     },
     card2: {

@@ -6,6 +6,7 @@ export default class AppStore {
     
     @observable productList = []
     @observable cartList = []
+    @observable scannedBarcode
 
     @computed get totalInCart() {
         let total = 0
@@ -34,5 +35,11 @@ export default class AppStore {
         })
 
         this.setCartList(newcart)
+    }
+
+
+    @action("sets barcode scanned")
+    setScannedBarcode(barcode) {
+        this.scannedBarcode = barcode
     }
 }
