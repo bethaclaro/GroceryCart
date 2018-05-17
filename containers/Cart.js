@@ -28,14 +28,19 @@ export default class Cart extends Component {
         this.onCancelModal = this.onCancelModal.bind(this)
         this.onCancelScannerModal = this.onCancelScannerModal.bind(this)
         this.onBarcodeScanned = this.onBarcodeScanned.bind(this)
+        this.onShowDrawer = this.onShowDrawer.bind(this)
 
         this.onDeleteSwipe = this.onDeleteSwipe.bind(this)
         this.onEditTap = this.onEditTap.bind(this)
 
     }
 
+    onShowDrawer(e) {
+        // this.props.navigation.toggleDrawer()
+        this.props.navigation.navigate('DrawerOpen')
+    }
+
     onPressAdd(e) {
-        // console.log("add button pressed")
         this.scannerModalVisible = true
     }
 
@@ -58,6 +63,8 @@ export default class Cart extends Component {
     }
 
     onBarcodeScanned(e) {
+        //find in ProductList
+        //if not found, proceed to create new one
         this.props.navigation.navigate("ProductList")
     }
 
@@ -87,6 +94,8 @@ export default class Cart extends Component {
 
                 <ShowScanner visible={this.scannerModalVisible} onCancel={this.onCancelScannerModal}
                     appStore={this.appStore} onBarcodeScanned={this.onBarcodeScanned} />
+
+                <MaterialIcons name="menu" color="black" size={30} style={{margin: 10}} onPress={this.onShowDrawer} />
 
                 <Text style={defStyles.resultText}>{this.appStore.totalInCart.toLocaleString('en', {minimumFractionDigits: 2})}</Text>
 
