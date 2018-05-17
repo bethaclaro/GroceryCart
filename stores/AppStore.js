@@ -8,6 +8,14 @@ export default class AppStore {
     @observable cartList = []
     @observable scannedBarcode
 
+    @computed get findInProductList() {
+        let found = this.productList.filter((item)=>{
+            return item.barcode === this.scannedBarcode
+        })
+
+        return found
+    }
+
     @computed get totalInCart() {
         let total = 0
         let cart = this.cartList
@@ -38,8 +46,16 @@ export default class AppStore {
     }
 
 
+
     @action("sets barcode scanned")
     setScannedBarcode(barcode) {
         this.scannedBarcode = barcode
     }
+
+
+    @action("sets product list")
+    setProductList(products) {
+        this.productList = products
+    }
+
 }

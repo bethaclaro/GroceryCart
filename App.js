@@ -8,7 +8,7 @@ const stores = {
   appStore: new AppStore()
 }
 
-const tempData = [
+const tempCartData = [
   {
       barcode: "1234567890",
       itemDescription: "Test Item 0",
@@ -35,8 +35,23 @@ const tempData = [
   }
 ]
 
+const tempProductData = [
+  {
+      barcode: "1234567890",
+      itemDescription: "Test Item 0",
+      price: 20.50
+  },
+  {
+      barcode: "0987654321",
+      itemDescription: "Test Item 1",
+      price: 30.50,
+  },
+]
+
+
 // TO DO: Remove once local data storage has been setup
-stores.appStore.setCartList(tempData)
+stores.appStore.setCartList(tempCartData)
+stores.appStore.setProductList(tempProductData)
 
 export default class App extends Component {
 

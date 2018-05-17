@@ -8,8 +8,8 @@ import { Text } from 'react-native'
 import CustomDrawer from '../components/CustomDrawer'
 
 export default DrawerNavigator({
-        Cart: {screen: Cart},
         ProductList: {screen: ProductList},
+        Cart: {screen: Cart},
         Settings: {screen: Settings}
     },
     {

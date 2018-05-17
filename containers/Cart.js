@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { SafeAreaView, Text, View, ScrollView, StyleSheet, Picker } from 'react-native'
+import { SafeAreaView, Text, View, ScrollView, 
+    StyleSheet, Picker, AlertIOS } from 'react-native'
 import defStyles from './defaultStyles'
 import { observable, computed } from 'mobx'
 import { observer, inject } from 'mobx-react/native'
@@ -29,6 +30,7 @@ export default class Cart extends Component {
         this.onCancelScannerModal = this.onCancelScannerModal.bind(this)
         this.onBarcodeScanned = this.onBarcodeScanned.bind(this)
         this.onShowDrawer = this.onShowDrawer.bind(this)
+        this.onYesAddNewProduct = this.onYesAddNewProduct.bind(this)
 
         this.onDeleteSwipe = this.onDeleteSwipe.bind(this)
         this.onEditTap = this.onEditTap.bind(this)
@@ -36,7 +38,6 @@ export default class Cart extends Component {
     }
 
     onShowDrawer(e) {
-        // this.props.navigation.toggleDrawer()
         this.props.navigation.navigate('DrawerOpen')
     }
 
@@ -62,10 +63,19 @@ export default class Cart extends Component {
         this.scannerModalVisible = false
     }
 
-    onBarcodeScanned(e) {
-        //find in ProductList
-        //if not found, proceed to create new one
-        this.props.navigation.navigate("ProductList")
+    onYesAddNewProduct() {
+        console.log("HEY HEY HEY")
+        this.props.navigation.navigate('ProductList')
+    }
+
+    onBarcodeScanned() {
+        let found = this.appStore.findInProductList
+        if(found.length>0) {
+            this.scannerModalVisible = false
+        } else {
+            this.scannerModalVisible = false
+            this.props.navigation.navigate('ProductList')
+        }
     }
 
     renderCard(item) {
